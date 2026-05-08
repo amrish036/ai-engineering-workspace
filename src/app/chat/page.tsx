@@ -1,0 +1,66 @@
+"use client";
+
+import { useState } from "react";
+
+export default function ChatPage() {
+  const [question, setQuestion] =
+    useState("");
+
+  const [answer, setAnswer] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  async function askQuestion() {
+    setLoading(true);
+
+    const response = await fetch(
+      `/api/repo-chat?question=${encodeURIComponent(
+        question
+      )}`
+    );
+
+    const data = await response.json();
+
+    setAnswer(data.answer);
+
+    setLoading(false);
+  }
+
+  return (
+    <main className="p-8 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">
+        AI Engineering Workspace
+      </h1>
+
+      <div className="flex gap-2 mb-6">
+        <input
+          className="border p-3 rounded w-full"
+          placeholder="Ask about your repository..."
+          value={question}
+          onChange={(e) =>
+            setQuestion(e.target.value)
+          }
+        />
+
+        <button
+          onClick={askQuestion}
+          className="bg-black text-white px-4 rounded"
+        >
+          Ask
+        </button>
+      </div>
+
+      {loading && (
+        <p>Thinking...</p>
+      )}
+
+      {answer && (
+        <div className="border rounded p-4 whitespace-pre-wrap">
+          {answer}
+        </div>
+      )}
+    </main>
+  );
+}
