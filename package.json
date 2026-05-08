@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "glob": "^13.0.6",
     "next": "16.2.6",
     "openai": "^6.37.0",
     "react": "19.2.4",
