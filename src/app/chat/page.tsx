@@ -12,21 +12,39 @@ export default function ChatPage() {
   const [loading, setLoading] =
     useState(false);
 
-  async function askQuestion() {
-    setLoading(true);
+ async function askQuestion() {
+  setLoading(true);
 
-    const response = await fetch(
-      `/api/repo-chat?question=${encodeURIComponent(
-        question
-      )}`
+  setAnswer("");
+
+  const response = await fetch(
+    `/api/repo-chat?question=${encodeURIComponent(
+      question
+    )}`
+  );
+
+  const reader =
+    response.body?.getReader();
+
+  const decoder = new TextDecoder();
+
+  let done = false;
+
+  while (!done) {
+    const result =
+      await reader?.read();
+
+    done = result?.done || false;
+
+    const chunk = decoder.decode(
+      result?.value
     );
 
-    const data = await response.json();
-
-    setAnswer(data.answer);
-
-    setLoading(false);
+    setAnswer((prev) => prev + chunk);
   }
+
+  setLoading(false);
+}
 
   return (
     <main className="p-8 max-w-4xl mx-auto">

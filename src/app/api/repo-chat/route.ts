@@ -5,27 +5,29 @@ import sql from "../../lib/db";
 import { generateEmbedding } from "../../lib/embeddings";
 
 const client = new OpenAI({
-    apiKey: process.env.GROQ_API_KEY,
-    baseURL: "https://api.groq.com/openai/v1",
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
 export async function GET(request: Request) {
-    const question = new URL(request.url).searchParams.get("question"
+  const question =
+    new URL(request.url).searchParams.get(
+      "question"
     ) || "";
 
-    // 1. Generate query embedding
-    const embedding =
-        await generateEmbedding(question);
+  // 1. Generate embedding
+  const embedding =
+    await generateEmbedding(question);
 
-    // 2. Retrieve most relevant chunks
-    const results = await sql`
+  // 2. Retrieve relevant chunks
+  const results = await sql`
     SELECT
       file,
       content,
 
       embedding <=> ${JSON.stringify(
         embedding
-    )}::vector AS distance
+      )}::vector AS distance
 
     FROM code_embeddings
 
@@ -34,49 +36,59 @@ export async function GET(request: Request) {
     LIMIT 5
   `;
 
-    // 3. Build context
-    const context = results
-        .map(
-            (result) =>
-                `FILE: ${result.file}\n${result.content}`
-        )
-        .join("\n\n");
+  // 3. Build context
+  const context = results
+    .map(
+      (result) =>
+        `FILE: ${result.file}\n${result.content}`
+    )
+    .join("\n\n");
 
-    // 4. Ask LLM using retrieved context
-    const completion =
-        await client.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
+  // 4. Stream response
+  const completion =
+    await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
 
-            messages: [
-                {
-                    role: "system",
-                    content:
-                        "You are an expert AI engineering assistant that explains repositories.",
-                },
+      stream: true,
 
-                {
-                    role: "user",
-                    content: `
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an expert AI engineering assistant.",
+        },
+
+        {
+          role: "user",
+          content: `
 Question:
 ${question}
 
 Repository Context:
 ${context}
 
-Answer the question using the repository context above.
+Answer using the repository context.
 `,
-                },
-            ],
-        });
-
-    return Response.json({
-        question,
-
-        retrievedFiles: results.map(
-            (r) => r.file
-        ),
-
-        answer:
-            completion.choices[0].message.content,
+        },
+      ],
     });
+
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of completion) {
+        const text =
+          chunk.choices[0]?.delta?.content || "";
+
+        controller.enqueue(
+          encoder.encode(text)
+        );
+      }
+
+      controller.close();
+    },
+  });
+
+  return new Response(stream);
 }
