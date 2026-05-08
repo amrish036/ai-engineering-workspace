@@ -43,16 +43,19 @@ This project focuses on building production-style AI infrastructure and develope
 # Tech Stack
 
 ## Frontend
+
 - Next.js
 - TypeScript
 - TailwindCSS
 - App Router
 
 ## Backend
+
 - Node.js
 - API Route Handlers
 
 ## AI Infrastructure
+
 - Groq API
 - OpenAI-compatible SDKs
 - RAG architecture
@@ -60,6 +63,7 @@ This project focuses on building production-style AI infrastructure and develope
 - Semantic retrieval systems
 
 ## Planned Infrastructure
+
 - PostgreSQL
 - pgvector
 - Redis

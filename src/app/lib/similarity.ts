@@ -1,7 +1,4 @@
-export function cosineSimilarity(
-  vecA: number[],
-  vecB: number[]
-) {
+export function cosineSimilarity(vecA: number[], vecB: number[]) {
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
@@ -12,8 +9,5 @@ export function cosineSimilarity(
     normB += vecB[i] * vecB[i];
   }
 
-  return (
-    dotProduct /
-    (Math.sqrt(normA) * Math.sqrt(normB))
-  );
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }

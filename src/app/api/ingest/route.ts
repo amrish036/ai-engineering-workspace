@@ -1,31 +1,28 @@
-import sql from "../../lib/db";
+import sql from '../../lib/db';
 
-import { getProjectFiles } from "../../lib/files";
-import { chunkCode } from "../../lib/chunk";
-import { generateEmbedding } from "../../lib/embeddings";
+import { getProjectFiles } from '../../lib/files';
+import { chunkCode } from '../../lib/chunk';
+import { generateEmbedding } from '../../lib/embeddings';
 
 export async function GET() {
-    await sql`
+  await sql`
 
     DELETE FROM code_embeddings
 
   `;
-    // 1. Read project files
-    const files = await getProjectFiles();
+  // 1. Read project files
+  const files = await getProjectFiles();
 
-    // 2. Chunk files
-    const chunks = files.flatMap((file) =>
-        chunkCode(file.file, file.content)
-    );
+  // 2. Chunk files
+  const chunks = files.flatMap((file) => chunkCode(file.file, file.content));
 
-    let inserted = 0;
+  let inserted = 0;
 
-    // 3. Generate embeddings + store
-    for (const chunk of chunks) {
-        const embedding =
-            await generateEmbedding(chunk.content);
+  // 3. Generate embeddings + store
+  for (const chunk of chunks) {
+    const embedding = await generateEmbedding(chunk.content);
 
-        await sql`
+    await sql`
       INSERT INTO code_embeddings (
         file,
         content,
@@ -38,11 +35,11 @@ export async function GET() {
       )
     `;
 
-        inserted++;
-    }
+    inserted++;
+  }
 
-    return Response.json({
-        success: true,
-        inserted,
-    });
+  return Response.json({
+    success: true,
+    inserted,
+  });
 }

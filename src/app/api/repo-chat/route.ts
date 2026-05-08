@@ -1,23 +1,19 @@
-import OpenAI from "openai";
+import OpenAI from 'openai';
 
-import sql from "../../lib/db";
+import sql from '../../lib/db';
 
-import { generateEmbedding } from "../../lib/embeddings";
+import { generateEmbedding } from '../../lib/embeddings';
 
 const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
+  baseURL: 'https://api.groq.com/openai/v1',
 });
 
 export async function GET(request: Request) {
-  const question =
-    new URL(request.url).searchParams.get(
-      "question"
-    ) || "";
+  const question = new URL(request.url).searchParams.get('question') || '';
 
   // 1. Generate embedding
-  const embedding =
-    await generateEmbedding(question);
+  const embedding = await generateEmbedding(question);
 
   // 2. Retrieve relevant chunks
   const results = await sql`
@@ -25,9 +21,7 @@ export async function GET(request: Request) {
       file,
       content,
 
-      embedding <=> ${JSON.stringify(
-        embedding
-      )}::vector AS distance
+      embedding <=> ${JSON.stringify(embedding)}::vector AS distance
 
     FROM code_embeddings
 
@@ -38,29 +32,24 @@ export async function GET(request: Request) {
 
   // 3. Build context
   const context = results
-    .map(
-      (result) =>
-        `FILE: ${result.file}\n${result.content}`
-    )
-    .join("\n\n");
+    .map((result) => `FILE: ${result.file}\n${result.content}`)
+    .join('\n\n');
 
   // 4. Stream response
-  const completion =
-    await client.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+  const completion = await client.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
 
-      stream: true,
+    stream: true,
 
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert AI engineering assistant.",
-        },
+    messages: [
+      {
+        role: 'system',
+        content: 'You are an expert AI engineering assistant.',
+      },
 
-        {
-          role: "user",
-          content: `
+      {
+        role: 'user',
+        content: `
 Question:
 ${question}
 
@@ -69,21 +58,18 @@ ${context}
 
 Answer using the repository context.
 `,
-        },
-      ],
-    });
+      },
+    ],
+  });
 
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
     async start(controller) {
       for await (const chunk of completion) {
-        const text =
-          chunk.choices[0]?.delta?.content || "";
+        const text = chunk.choices[0]?.delta?.content || '';
 
-        controller.enqueue(
-          encoder.encode(text)
-        );
+        controller.enqueue(encoder.encode(text));
       }
 
       controller.close();

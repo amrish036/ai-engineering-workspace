@@ -1,9 +1,7 @@
-import { generateEmbedding } from "../../lib/embeddings";
+import { generateEmbedding } from '../../lib/embeddings';
 
 export async function GET() {
-  const embedding = await generateEmbedding(
-    "JWT authentication middleware"
-  );
+  const embedding = await generateEmbedding('JWT authentication middleware');
 
   return Response.json({
     dimensions: embedding.length,

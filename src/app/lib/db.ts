@@ -1,11 +1,11 @@
-import postgres from "postgres";
+import postgres from 'postgres';
 
 const sql = postgres({
-  host: "localhost",
+  host: 'localhost',
   port: 5432,
-  database: "aiworkspace",
-  username: "postgres",
-  password: "postgres",
+  database: 'aiworkspace',
+  username: 'postgres',
+  password: 'postgres',
 });
 
 export default sql;
