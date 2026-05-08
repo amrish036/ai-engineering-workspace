@@ -5,22 +5,27 @@ import { chunkCode } from "../../lib/chunk";
 import { generateEmbedding } from "../../lib/embeddings";
 
 export async function GET() {
-  // 1. Read project files
-  const files = await getProjectFiles();
-
-  // 2. Chunk files
-  const chunks = files.flatMap((file) =>
-    chunkCode(file.file, file.content)
-  );
-
-  let inserted = 0;
-
-  // 3. Generate embeddings + store
-  for (const chunk of chunks) {
-    const embedding =
-      await generateEmbedding(chunk.content);
-
     await sql`
+
+    DELETE FROM code_embeddings
+
+  `;
+    // 1. Read project files
+    const files = await getProjectFiles();
+
+    // 2. Chunk files
+    const chunks = files.flatMap((file) =>
+        chunkCode(file.file, file.content)
+    );
+
+    let inserted = 0;
+
+    // 3. Generate embeddings + store
+    for (const chunk of chunks) {
+        const embedding =
+            await generateEmbedding(chunk.content);
+
+        await sql`
       INSERT INTO code_embeddings (
         file,
         content,
@@ -33,11 +38,11 @@ export async function GET() {
       )
     `;
 
-    inserted++;
-  }
+        inserted++;
+    }
 
-  return Response.json({
-    success: true,
-    inserted,
-  });
+    return Response.json({
+        success: true,
+        inserted,
+    });
 }
