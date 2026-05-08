@@ -15,7 +15,7 @@ async function getExtractor() {
 
 export async function generateEmbedding(
   text: string
-) {
+): Promise<number[]> {
   const extractor = await getExtractor();
 
   const output = await extractor(text, {
@@ -23,5 +23,5 @@ export async function generateEmbedding(
     normalize: true,
   });
 
-  return Array.from(output.data);
+  return Array.from(output.data) as number[];
 }
