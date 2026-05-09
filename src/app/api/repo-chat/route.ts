@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
 
-import sql from '../../lib/db';
+import sql from '../../../lib/db';
 
-import { generateEmbedding } from '../../lib/embeddings';
+import { generateEmbedding } from '../../../lib/embeddings';
 
 const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,

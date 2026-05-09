@@ -1,6 +1,6 @@
-import sql from '../../lib/db';
+import sql from '../../../lib/db';
 
-import { generateEmbedding } from '../../lib/embeddings';
+import { generateEmbedding } from '../../../lib/embeddings';
 
 export async function GET() {
   const query = 'Where are API routes handled?';

@@ -1,8 +1,8 @@
-import sql from '../../lib/db';
+import sql from '../../../lib/db';
 
-import { getProjectFiles } from '../../lib/files';
-import { chunkCode } from '../../lib/chunk';
-import { generateEmbedding } from '../../lib/embeddings';
+import { getProjectFiles } from '../../../lib/files';
+import { chunkCode } from '../../../lib/chunk';
+import { generateEmbedding } from '../../../lib/embeddings';
 
 export async function GET() {
   await sql`

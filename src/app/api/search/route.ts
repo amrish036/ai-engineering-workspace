@@ -1,7 +1,7 @@
-import { getProjectFiles } from '../../lib/files';
-import { chunkCode } from '../../lib/chunk';
-import { generateEmbedding } from '../../lib/embeddings';
-import { cosineSimilarity } from '../../lib/similarity';
+import { getProjectFiles } from '../../../lib/files';
+import { chunkCode } from '../../../lib/chunk';
+import { generateEmbedding } from '../../../lib/embeddings';
+import { cosineSimilarity } from '../../../lib/similarity';
 
 export async function GET() {
   const query = 'Where is API route logic handled?';
