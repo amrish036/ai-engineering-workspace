@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function ChatPage() {
   const [question, setQuestion] = useState('');
@@ -82,18 +82,18 @@ export default function ChatPage() {
   }
 
   return (
-    <main className="h-screen bg-white flex">
+    <main className="h-screen bg-[#0D1117] text-white flex">
       {/* Header */}
       {/* Sidebar */}
-      <div className="w-72 border-r bg-gray-50 flex flex-col h-screen">
+      <div className="w-72 border-r border-white/10 bg-[#161B22] flex flex-col h-screen">
         {/* Top */}
-        <div className="p-4 border-b">
+        <div className="p-4 border-b border-white/10">
           <h1 className="font-bold text-lg">
             AI Workspace
           </h1>
 
           <button
-            className="mt-4 w-full bg-black text-white rounded-xl py-2 hover:opacity-90"
+            className="mt-4 w-full bg-blue-600 text-white rounded-xl py-2 hover:bg-blue-500 transition"
             onClick={() => setMessages([])}
           >
             New Chat
@@ -102,7 +102,7 @@ export default function ChatPage() {
 
         {/* Conversations */}
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
-          <div className="bg-white border rounded-xl p-3 cursor-pointer hover:bg-gray-100">
+          <div className="bg-[#21262D] border border-white/10 rounded-xl p-3 cursor-pointer hover:bg-[#30363D]">
             <p className="text-sm font-medium truncate">
               Current Repository Chat
             </p>
@@ -114,7 +114,7 @@ export default function ChatPage() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t h-[73px] flex items-center px-4 text-xs text-gray-500">
+        <div className="border-t border-white/10 h-[73px] flex items-center px-4 text-xs text-gray-500">
           AI Engineering Workspace
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function ChatPage() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`rounded-2xl px-5 py-4 max-w-3xl shadow-sm ${message.role === 'user' ? 'bg-black text-white' : 'bg-gray-100 text-black'
+                  className={`rounded-2xl px-5 py-4 max-w-3xl shadow-sm ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-[#21262D] text-gray-100 border border-white/5'
                     }`}
                 >
                   <ReactMarkdown
@@ -140,11 +140,11 @@ export default function ChatPage() {
                         const match = /language-(\w+)/.exec(className || '');
 
                         return match ? (
-                          <SyntaxHighlighter style={oneLight} language={match[1]} PreTag="div">
+                          <SyntaxHighlighter style={oneDark} language={match[1]} PreTag="div">
                             {String(children).replace(/\n$/, '')}
                           </SyntaxHighlighter>
                         ) : (
-                          <code className="bg-gray-200 px-1 py-0.5 rounded text-sm">{children}</code>
+                          <code className="bg-black/30 px-1 py-0.5 rounded text-sm">{children}</code>
                         );
                       },
                     }}
@@ -160,10 +160,10 @@ export default function ChatPage() {
         </div>
 
         {/* Input */}
-        <div className="border-t h-[73px] bg-white flex items-center px-4">
+        <div className="border-t border-white/10 h-[73px] bg-[#161B22] flex items-center px-4">
           <div className="w-full max-w-4xl mx-auto flex gap-3">
             <input
-              className="flex-1 border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
+              className="flex-1 bg-[#21262D] border border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder:text-gray-500"
               placeholder="Ask about your repository..."
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
@@ -177,7 +177,7 @@ export default function ChatPage() {
             <button
               onClick={askQuestion}
               disabled={loading}
-              className="bg-black text-white px-6 rounded-xl hover:opacity-90 disabled:opacity-50"
+              className="bg-blue-600 text-white px-6 rounded-xl hover:bg-blue-500 disabled:opacity-50 transition"
             >
               {loading ? 'Thinking...' : 'Ask'}
             </button>
