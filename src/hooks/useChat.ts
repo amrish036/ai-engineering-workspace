@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Message } from '@/types/chat';
 
@@ -7,11 +7,14 @@ export function useChat() {
 
   const [loading, setLoading] = useState(false);
 
-  const [messages, setMessages] = useState<Message[]>(() => {
-    if (typeof window === 'undefined') return [];
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
     const saved = localStorage.getItem('ai-chat-messages');
-    return saved ? JSON.parse(saved) : [];
-  });
+    if (saved) {
+      setMessages(JSON.parse(saved));
+    }
+  }, []);
 
   async function askQuestion() {
     if (!question.trim()) return;
