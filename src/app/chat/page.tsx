@@ -82,76 +82,106 @@ export default function ChatPage() {
   }
 
   return (
-    <main className="h-screen bg-white flex flex-col">
+    <main className="h-screen bg-white flex">
       {/* Header */}
-      <div className="border-b px-6 py-4">
-        <h1 className="text-2xl font-bold">AI Engineering Workspace</h1>
+      {/* Sidebar */}
+      <div className="w-72 border-r bg-gray-50 flex flex-col h-screen">
+        {/* Top */}
+        <div className="p-4 border-b">
+          <h1 className="font-bold text-lg">
+            AI Workspace
+          </h1>
 
-        <p className="text-sm text-gray-500 mt-1">Repository-aware AI assistant</p>
-      </div>
+          <button
+            className="mt-4 w-full bg-black text-white rounded-xl py-2 hover:opacity-90"
+            onClick={() => setMessages([])}
+          >
+            New Chat
+          </button>
+        </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-6">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`rounded-2xl px-5 py-4 max-w-3xl shadow-sm ${
-                  message.role === 'user' ? 'bg-black text-white' : 'bg-gray-100 text-black'
-                }`}
-              >
-                <ReactMarkdown
-                  components={{
-                    code(props) {
-                      const { children, className } = props;
+        {/* Conversations */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          <div className="bg-white border rounded-xl p-3 cursor-pointer hover:bg-gray-100">
+            <p className="text-sm font-medium truncate">
+              Current Repository Chat
+            </p>
 
-                      const match = /language-(\w+)/.exec(className || '');
+            <p className="text-xs text-gray-500 mt-1">
+              Active session
+            </p>
+          </div>
+        </div>
 
-                      return match ? (
-                        <SyntaxHighlighter style={oneLight} language={match[1]} PreTag="div">
-                          {String(children).replace(/\n$/, '')}
-                        </SyntaxHighlighter>
-                      ) : (
-                        <code className="bg-gray-200 px-1 py-0.5 rounded text-sm">{children}</code>
-                      );
-                    },
-                  }}
-                >
-                  {message.content}
-                </ReactMarkdown>
-              </div>
-            </div>
-          ))}
-
-          <div ref={messagesEndRef} />
+        {/* Bottom */}
+        <div className="border-t h-[73px] flex items-center px-4 text-xs text-gray-500">
+          AI Engineering Workspace
         </div>
       </div>
 
-      {/* Input */}
-      <div className="border-t p-4 bg-white">
-        <div className="max-w-4xl mx-auto flex gap-3">
-          <input
-            className="flex-1 border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
-            placeholder="Ask about your repository..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                askQuestion();
-              }
-            }}
-          />
+      <div className="flex-1 flex flex-col">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`rounded-2xl px-5 py-4 max-w-3xl shadow-sm ${message.role === 'user' ? 'bg-black text-white' : 'bg-gray-100 text-black'
+                    }`}
+                >
+                  <ReactMarkdown
+                    components={{
+                      code(props) {
+                        const { children, className } = props;
 
-          <button
-            onClick={askQuestion}
-            disabled={loading}
-            className="bg-black text-white px-6 rounded-xl hover:opacity-90 disabled:opacity-50"
-          >
-            {loading ? 'Thinking...' : 'Ask'}
-          </button>
+                        const match = /language-(\w+)/.exec(className || '');
+
+                        return match ? (
+                          <SyntaxHighlighter style={oneLight} language={match[1]} PreTag="div">
+                            {String(children).replace(/\n$/, '')}
+                          </SyntaxHighlighter>
+                        ) : (
+                          <code className="bg-gray-200 px-1 py-0.5 rounded text-sm">{children}</code>
+                        );
+                      },
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            ))}
+
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+
+        {/* Input */}
+        <div className="border-t h-[73px] bg-white flex items-center px-4">
+          <div className="w-full max-w-4xl mx-auto flex gap-3">
+            <input
+              className="flex-1 border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
+              placeholder="Ask about your repository..."
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  askQuestion();
+                }
+              }}
+            />
+
+            <button
+              onClick={askQuestion}
+              disabled={loading}
+              className="bg-black text-white px-6 rounded-xl hover:opacity-90 disabled:opacity-50"
+            >
+              {loading ? 'Thinking...' : 'Ask'}
+            </button>
+          </div>
         </div>
       </div>
     </main>
