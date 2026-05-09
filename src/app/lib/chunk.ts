@@ -3,11 +3,7 @@ type Chunk = {
   content: string;
 };
 
-export function chunkCode(
-  file: string,
-  content: string,
-  chunkSize = 1000
-): Chunk[] {
+export function chunkCode(file: string, content: string, chunkSize = 1000): Chunk[] {
   const chunks: Chunk[] = [];
 
   for (let i = 0; i < content.length; i += chunkSize) {

@@ -31,9 +31,7 @@ export async function GET(request: Request) {
   `;
 
   // 3. Build context
-  const context = results
-    .map((result) => `FILE: ${result.file}\n${result.content}`)
-    .join('\n\n');
+  const context = results.map((result) => `FILE: ${result.file}\n${result.content}`).join('\n\n');
 
   // 4. Stream response
   const completion = await client.chat.completions.create({
