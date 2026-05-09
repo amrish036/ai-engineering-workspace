@@ -107,27 +107,32 @@ Current phase: Full RAG implementation with vector search, AI chat, and interact
 ## Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd ai-engineering-workspace
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start PostgreSQL database**
+
    ```bash
    docker-compose up -d
    ```
 
 4. **Setup database schema**
+
    ```bash
    curl http://localhost:3000/api/setup-db
    ```
 
 5. **Ingest codebase** (optional - indexes the current project)
+
    ```bash
    curl http://localhost:3000/api/ingest
    ```

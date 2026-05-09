@@ -9,9 +9,7 @@ export function useChat() {
 
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window === 'undefined') return [];
-
     const saved = localStorage.getItem('ai-chat-messages');
-
     return saved ? JSON.parse(saved) : [];
   });
 
