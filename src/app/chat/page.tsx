@@ -15,11 +15,26 @@ export default function ChatPage() {
     }[]
   >([]);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('ai-chat-messages');
+    if (saved) {
+      setMessages(JSON.parse(saved));
+    }
+  }, []);
+
   const [loading, setLoading] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    localStorage.setItem(
+      'ai-chat-messages',
+      JSON.stringify(messages)
+    );
+  }, [messages]);
+
 
   useEffect(() => {
     function handleOnline() {
@@ -117,7 +132,12 @@ export default function ChatPage() {
 
           <button
             className="mt-4 w-full bg-blue-600 text-white rounded-xl py-2 hover:bg-blue-500 transition"
-            onClick={() => setMessages([])}
+            onClick={() => {
+              localStorage.removeItem(
+                'ai-chat-messages'
+              );
+              setMessages([]);
+            }}
           >
             New Chat
           </button>
@@ -192,7 +212,7 @@ export default function ChatPage() {
                             </SyntaxHighlighter>
                           ) : (
                             <code className="bg-black/30 px-1 py-0.5 rounded text-sm">
-                              {children}
+                              {String(children)}
                             </code>
                           );
                         },
