@@ -19,6 +19,31 @@ export default function ChatPage() {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    function handleOnline() {
+      setIsOnline(true);
+    }
+
+    function handleOffline() {
+      setIsOnline(false);
+    }
+
+    window.addEventListener('online', handleOnline);
+
+    window.addEventListener('offline', handleOffline);
+
+    // Initial state
+    setIsOnline(navigator.onLine);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: 'smooth',
@@ -88,9 +113,7 @@ export default function ChatPage() {
       <div className="w-72 border-r border-white/10 bg-[#161B22] flex flex-col h-screen">
         {/* Top */}
         <div className="p-4 border-b border-white/10">
-          <h1 className="font-bold text-lg">
-            AI Workspace
-          </h1>
+          <h1 className="font-bold text-lg">AI Workspace</h1>
 
           <button
             className="mt-4 w-full bg-blue-600 text-white rounded-xl py-2 hover:bg-blue-500 transition"
@@ -103,13 +126,9 @@ export default function ChatPage() {
         {/* Conversations */}
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
           <div className="bg-[#21262D] border border-white/10 rounded-xl p-3 cursor-pointer hover:bg-[#30363D]">
-            <p className="text-sm font-medium truncate">
-              Current Repository Chat
-            </p>
+            <p className="text-sm font-medium truncate">Current Repository Chat</p>
 
-            <p className="text-xs text-gray-500 mt-1">
-              Active session
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Active session</p>
           </div>
         </div>
 
@@ -120,6 +139,20 @@ export default function ChatPage() {
       </div>
 
       <div className="flex-1 flex flex-col">
+        {/* Chat Header */}
+        <div className="h-[73px] border-b border-white/10 bg-[#161B22] flex items-center justify-between px-6">
+          <div>
+            <h1 className="text-lg font-semibold text-white">Repository Assistant</h1>
+
+            <p className="text-sm text-gray-400">AI-powered codebase understanding</p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`} />
+
+            <span className="text-sm text-gray-400">{isOnline ? 'Connected' : 'Offline'}</span>
+          </div>
+        </div>
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
           <div className="max-w-4xl mx-auto space-y-6">
@@ -129,8 +162,11 @@ export default function ChatPage() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`rounded-2xl px-5 py-4 max-w-3xl shadow-sm ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-[#21262D] text-gray-100 border border-white/5'
-                    }`}
+                  className={`rounded-2xl px-5 py-4 max-w-3xl shadow-sm ${
+                    message.role === 'user'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-[#21262D] text-gray-100 border border-white/5'
+                  }`}
                 >
                   <ReactMarkdown
                     components={{
@@ -144,7 +180,9 @@ export default function ChatPage() {
                             {String(children).replace(/\n$/, '')}
                           </SyntaxHighlighter>
                         ) : (
-                          <code className="bg-black/30 px-1 py-0.5 rounded text-sm">{children}</code>
+                          <code className="bg-black/30 px-1 py-0.5 rounded text-sm">
+                            {children}
+                          </code>
                         );
                       },
                     }}
