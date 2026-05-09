@@ -6,11 +6,11 @@ An AI-native developer platform for understanding, indexing, and interacting wit
 
 AI Engineering Workspace is a modern RAG-powered platform that enables developers to:
 
-- Chat with repositories
-- Understand architecture flows
-- Perform semantic code search
+- Chat with repositories using AI
+- Understand architecture flows through semantic search
+- Perform intelligent code analysis
 - Generate implementation insights
-- Analyze engineering systems using AI
+- Analyze engineering systems using AI-powered tools
 
 This project focuses on building production-style AI infrastructure and developer tooling workflows.
 
@@ -20,18 +20,19 @@ This project focuses on building production-style AI infrastructure and develope
 
 ## Current
 
-- Next.js App Router architecture
-- AI API integration (Groq/OpenAI-compatible)
-- Repository ingestion pipeline
-- Code chunking system
-- Modular backend utilities
+- **Next.js App Router architecture** with TypeScript
+- **AI API integration** (Groq/OpenAI-compatible with Llama models)
+- **Repository ingestion pipeline** with automated code chunking
+- **Embedding generation** using transformer models (Xenova/all-MiniLM-L6-v2)
+- **Vector database integration** (PostgreSQL with pgvector)
+- **Semantic repository search** with multiple retrieval strategies
+- **Repository-aware AI chat** with streaming responses
+- **Interactive chat interface** with message persistence
+- **Docker infrastructure** for local development
+- **Modular backend utilities** for embeddings, similarity, and file processing
 
 ## Planned
 
-- Embedding generation
-- Vector database integration
-- Semantic repository search
-- Repository-aware AI chat
 - PR review assistant
 - Architecture summarization
 - Multi-agent engineering workflows
@@ -44,30 +45,32 @@ This project focuses on building production-style AI infrastructure and develope
 
 ## Frontend
 
-- Next.js
+- Next.js 16 (App Router)
+- React 19
 - TypeScript
 - TailwindCSS
-- App Router
+- React Markdown & Syntax Highlighting
 
 ## Backend
 
 - Node.js
-- API Route Handlers
+- Next.js API Route Handlers
+- PostgreSQL with pgvector
+- Drizzle ORM
 
 ## AI Infrastructure
 
-- Groq API
+- Groq API (Llama 3.3 70B)
 - OpenAI-compatible SDKs
-- RAG architecture
-- Embedding pipelines
-- Semantic retrieval systems
+- Xenova Transformers (client-side embeddings)
+- RAG architecture with semantic retrieval
+- Cosine similarity for vector matching
 
-## Planned Infrastructure
+## Infrastructure
 
-- PostgreSQL
-- pgvector
-- Redis
-- Docker
+- Docker & Docker Compose
+- PostgreSQL vector database
+- Local development setup
 
 ---
 
@@ -75,12 +78,13 @@ This project focuses on building production-style AI infrastructure and develope
 
 This project explores modern AI engineering concepts including:
 
-- Retrieval-Augmented Generation (RAG)
-- Codebase ingestion pipelines
-- Semantic search systems
-- Context engineering
+- Retrieval-Augmented Generation (RAG) for codebase understanding
+- Codebase ingestion and chunking pipelines
+- Semantic search and vector similarity
+- Context engineering for AI interactions
 - AI workflow orchestration
 - Developer productivity tooling
+- Real-time streaming AI responses
 
 ---
 
@@ -88,27 +92,70 @@ This project explores modern AI engineering concepts including:
 
 🚧 Active Development
 
-Current phase:
-Repository ingestion and chunking pipeline.
+Current phase: Full RAG implementation with vector search, AI chat, and interactive UI.
 
 ---
 
 # Local Development
 
-## Install dependencies
+## Prerequisites
 
-```bash
-npm install
-```
+- Node.js 18+
+- Docker & Docker Compose
+- Git
 
-## Run development server
+## Setup
 
-```bash
-npm run dev
-```
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd ai-engineering-workspace
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start PostgreSQL database**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Setup database schema**
+   ```bash
+   curl http://localhost:3000/api/setup-db
+   ```
+
+5. **Ingest codebase** (optional - indexes the current project)
+   ```bash
+   curl http://localhost:3000/api/ingest
+   ```
+
+6. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+Visit `http://localhost:3000/chat` to interact with the AI assistant.
+
+---
+
+# API Endpoints
+
+- `GET /api/chat` - Basic RAG chat (no persistence)
+- `GET /api/repo-chat` - Repository-aware chat with vector search
+- `GET /api/search` - Semantic code search
+- `GET /api/vector-search` - Vector database search
+- `GET /api/embeddings` - Test embedding generation
+- `GET /api/files` - List and chunk project files
+- `GET /api/ingest` - Ingest codebase into vector database
+- `GET /api/setup-db` - Initialize database schema
+- `GET /api/db` - Test database connection
+- `GET /api/test` - Test AI API connection
 
 ---
 
 # Vision
 
-The long-term goal is to build an AI-native engineering workspace capable of understanding repositories, assisting developers, and orchestrating intelligent software workflows.
+The long-term goal is to build an AI-native engineering workspace capable of understanding repositories, assisting developers, and orchestrating intelligent software workflows with production-ready RAG infrastructure.
