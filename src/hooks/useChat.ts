@@ -1,21 +1,63 @@
 import { useEffect, useState } from 'react';
-import { Message } from '@/types/chat';
-import { STORAGE } from '@/constants';
+import { ChatSession, Message } from '@/types/chat';
+
+import { CHAT_CONSTANTS, STORAGE_CONSTANTS } from '@/constants';
 
 export function useChat() {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
+  // Load sessions
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE.STORAGE_KEYS.CHAT_MESSAGES);
+    const saved = localStorage.getItem(STORAGE_CONSTANTS.STORAGE_KEYS.CHAT_SESSIONS);
+
     if (saved) {
-      setMessages(JSON.parse(saved));
+      const parsed = JSON.parse(saved);
+      setSessions(parsed);
+      if (parsed.length > 0) {
+        setActiveSessionId(parsed[0].id);
+      }
+      return;
     }
+
+    const firstSession: ChatSession = {
+      id: crypto.randomUUID(),
+      title: 'New Chat',
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    setSessions([firstSession]);
+
+    setActiveSessionId(firstSession.id);
   }, []);
 
+  // Persist sessions
+  useEffect(() => {
+    localStorage.setItem(STORAGE_CONSTANTS.STORAGE_KEYS.CHAT_SESSIONS, JSON.stringify(sessions));
+  }, [sessions]);
+
+  const activeSession = sessions.find((session) => session.id === activeSessionId);
+
+  function createNewChat() {
+    const newSession: ChatSession = {
+      id: crypto.randomUUID(),
+      title: CHAT_CONSTANTS.CHAT_BUTTONS.NEW_CHAT,
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    setSessions((prev) => [newSession, ...prev]);
+
+    setActiveSessionId(newSession.id);
+  }
+
   async function askQuestion() {
-    if (!question.trim()) return;
+    if (!question.trim() || !activeSessionId) {
+      return;
+    }
 
     setLoading(true);
 
@@ -23,21 +65,32 @@ export function useChat() {
 
     setQuestion('');
 
-    setMessages((prev) => [
-      ...prev,
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      role: CHAT_CONSTANTS.ROLE.USER,
+      content: userQuestion,
+    };
 
-      {
-        id: crypto.randomUUID(),
-        role: 'user',
-        content: userQuestion,
-      },
+    const assistantMessage: Message = {
+      id: crypto.randomUUID(),
+      role: CHAT_CONSTANTS.ROLE.ASSISTANT,
+      content: '',
+    };
 
-      {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: '',
-      },
-    ]);
+    // Add initial messages
+    setSessions((prev) =>
+      prev.map((session) => {
+        if (session.id !== activeSessionId) {
+          return session;
+        }
+
+        return {
+          ...session,
+          title: session.messages.length === 0 ? userQuestion.slice(0, 30) : session.title,
+          messages: [...session.messages, userMessage, assistantMessage],
+        };
+      })
+    );
 
     try {
       const response = await fetch(`/api/repo-chat?question=${encodeURIComponent(userQuestion)}`);
@@ -56,19 +109,27 @@ export function useChat() {
         const chunk = decoder.decode(result?.value);
 
         if (chunk) {
-          setMessages((prev) => {
-            const updated = [...prev];
+          setSessions((prev) =>
+            prev.map((session) => {
+              if (session.id !== activeSessionId) {
+                return session;
+              }
 
-            const lastIndex = updated.length - 1;
+              const updatedMessages = [...session.messages];
 
-            updated[lastIndex] = {
-              ...updated[lastIndex],
+              const lastIndex = updatedMessages.length - 1;
 
-              content: updated[lastIndex].content + chunk,
-            };
+              updatedMessages[lastIndex] = {
+                ...updatedMessages[lastIndex],
+                content: updatedMessages[lastIndex].content + chunk,
+              };
 
-            return updated;
-          });
+              return {
+                ...session,
+                messages: updatedMessages,
+              };
+            })
+          );
         }
       }
     } catch (error) {
@@ -78,18 +139,16 @@ export function useChat() {
     }
   }
 
-  function clearChat() {
-    localStorage.removeItem(STORAGE.STORAGE_KEYS.CHAT_MESSAGES);
-    setMessages([]);
-  }
-
   return {
     question,
     setQuestion,
     loading,
-    messages,
+    sessions,
+    activeSession,
+    activeSessionId,
+    setActiveSessionId,
+    createNewChat,
     askQuestion,
-    clearChat,
   };
 }
 

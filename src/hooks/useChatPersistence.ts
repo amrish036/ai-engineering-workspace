@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { Message } from '@/types/chat';
-import { STORAGE } from '@/constants';
+import { ChatSession } from '@/types/chat';
+import { STORAGE_CONSTANTS } from '@/constants';
 
-function useChatPersistence(messages: Message[]) {
+function useChatPersistence(sessions: ChatSession[]) {
   useEffect(() => {
-    localStorage.setItem(STORAGE.STORAGE_KEYS.CHAT_MESSAGES, JSON.stringify(messages));
-  }, [messages]);
+    localStorage.setItem(STORAGE_CONSTANTS.STORAGE_KEYS.CHAT_SESSIONS, JSON.stringify(sessions));
+  }, [sessions]);
 }
 
 export default useChatPersistence;
