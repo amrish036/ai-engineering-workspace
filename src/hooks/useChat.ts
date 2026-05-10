@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
-
 import { Message } from '@/types/chat';
+import { STORAGE } from '@/constants';
 
 export function useChat() {
   const [question, setQuestion] = useState('');
-
   const [loading, setLoading] = useState(false);
-
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('ai-chat-messages');
+    const saved = localStorage.getItem(STORAGE.STORAGE_KEYS.CHAT_MESSAGES);
     if (saved) {
       setMessages(JSON.parse(saved));
     }
@@ -81,8 +79,7 @@ export function useChat() {
   }
 
   function clearChat() {
-    localStorage.removeItem('ai-chat-messages');
-
+    localStorage.removeItem(STORAGE.STORAGE_KEYS.CHAT_MESSAGES);
     setMessages([]);
   }
 
