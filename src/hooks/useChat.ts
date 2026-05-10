@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ChatSession, Message } from '@/types/chat';
 
 import { CHAT_CONSTANTS, STORAGE_CONSTANTS } from '@/constants';
+import { useChatPersistence } from '.';
 
 export function useChat() {
   const [question, setQuestion] = useState('');
@@ -35,9 +36,7 @@ export function useChat() {
   }, []);
 
   // Persist sessions
-  useEffect(() => {
-    localStorage.setItem(STORAGE_CONSTANTS.STORAGE_KEYS.CHAT_SESSIONS, JSON.stringify(sessions));
-  }, [sessions]);
+  useChatPersistence(sessions);
 
   const activeSession = sessions.find((session) => session.id === activeSessionId);
 
