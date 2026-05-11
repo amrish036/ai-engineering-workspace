@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import simpleGit from 'simple-git';
 import path from 'path';
 import fs from 'fs';
+import { getRepoFiles } from '@/lib';
 
 export async function POST(request: Request) {
     try {
@@ -32,13 +33,15 @@ export async function POST(request: Request) {
 
         // Clone repo
         await git.clone(repoUrl, localPath);
+        console.log('Clone complete');
+
+        const files = getRepoFiles(localPath);
+        console.log('Files found:', files.length);
 
         return NextResponse.json({
             success: true,
-
-            message: 'Repository cloned successfully',
-
-            localPath,
+            message: 'Repository imported successfully',
+            fileCount: files.length,
         });
     } catch (error) {
         console.error(error);
