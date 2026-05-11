@@ -1,4 +1,4 @@
-import { generateEmbedding } from '../../../lib/embeddings';
+import { generateEmbedding } from '@/lib';
 
 export async function GET() {
   const embedding = await generateEmbedding('JWT authentication middleware');

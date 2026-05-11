@@ -1,5 +1,4 @@
-import { getProjectFiles } from '../../../lib/files';
-import { chunkCode } from '../../../lib/chunk';
+import { getProjectFiles, chunkCode } from '@/lib';
 
 export async function GET() {
   const files = await getProjectFiles();

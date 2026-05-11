@@ -1,4 +1,4 @@
-import sql from '../../../lib/db';
+import { sql } from '@/lib';
 
 export async function GET() {
   // Enable pgvector
