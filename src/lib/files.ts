@@ -21,4 +21,4 @@ export async function getProjectFiles() {
   return fileContents;
 }
 
-export default getProjectFiles
+export default getProjectFiles;

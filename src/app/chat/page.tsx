@@ -3,7 +3,7 @@
 import { ChatHeader, ChatInput, Sidebar, ChatMessages, Modal } from '@/components';
 import { CHAT_CONSTANTS } from '@/constants';
 
-import { useOnlineStatus, useAutoScroll, useChat } from '@/hooks';
+import { useOnlineStatus, useAutoScroll, useChat, useRepositoryImport } from '@/hooks';
 import { useState } from 'react';
 
 export default function ChatPage() {
@@ -24,6 +24,14 @@ export default function ChatPage() {
 
   const [showImportModal, setShowImportModal] = useState(false);
   const [repoUrl, setRepoUrl] = useState('');
+
+  const { importingRepo, handleImportRepository } = useRepositoryImport({
+    onSuccess() {
+      setShowImportModal(false);
+
+      setRepoUrl('');
+    },
+  });
 
   return (
     <main className="h-screen bg-[#0D1117] text-white flex">
@@ -87,8 +95,12 @@ export default function ChatPage() {
             {CHAT_CONSTANTS.CHAT_BUTTONS.CANCEL}
           </button>
 
-          <button className="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition">
-            {CHAT_CONSTANTS.CHAT_BUTTONS.IMPORT}
+          <button
+            onClick={() => handleImportRepository(repoUrl)}
+            disabled={importingRepo}
+            className="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition disabled:opacity-50"
+          >
+            {importingRepo ? 'Importing...' : 'Import'}
           </button>
         </div>
       </Modal>

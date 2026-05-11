@@ -1,4 +1,4 @@
-import { generateEmbedding, getProjectFiles, sql, chunkCode } from '@/lib';
+import { getProjectFiles, chunkCode, generateEmbedding, sql } from '@/lib';
 
 export async function GET() {
   await sql`

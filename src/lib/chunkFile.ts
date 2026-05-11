@@ -1,6 +1,6 @@
 type Chunk = {
-    content: string;
-    index: number;
+  content: string;
+  index: number;
 };
 
 const CHUNK_SIZE = 1200;
@@ -8,23 +8,23 @@ const CHUNK_SIZE = 1200;
 const CHUNK_OVERLAP = 200;
 
 export function chunkFile(content: string): Chunk[] {
-    const chunks: Chunk[] = [];
+  const chunks: Chunk[] = [];
 
-    let start = 0;
-    let index = 0;
+  let start = 0;
+  let index = 0;
 
-    while (start < content.length) {
-        const end = start + CHUNK_SIZE;
-        const chunk = content.slice(start, end);
+  while (start < content.length) {
+    const end = start + CHUNK_SIZE;
+    const chunk = content.slice(start, end);
 
-        chunks.push({ content: chunk, index, });
+    chunks.push({ content: chunk, index });
 
-        start += CHUNK_SIZE - CHUNK_OVERLAP;
+    start += CHUNK_SIZE - CHUNK_OVERLAP;
 
-        index++;
-    }
+    index++;
+  }
 
-    return chunks;
+  return chunks;
 }
 
 export default chunkFile;

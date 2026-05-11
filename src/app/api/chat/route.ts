@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
-import { generateEmbedding, getProjectFiles, cosineSimilarity, chunkCode } from '@/lib'
-
+import { generateEmbedding, getProjectFiles, cosineSimilarity, chunkCode } from '@/lib';
 
 const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,

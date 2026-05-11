@@ -22,5 +22,3 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 export default generateEmbedding;
-
-
