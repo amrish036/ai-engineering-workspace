@@ -21,7 +21,7 @@ export const CHAT_BUTTONS = {
   THINKING: 'Thinking...',
   ASK: 'Ask',
   CANCEL: 'Cancel',
-  CLOSE: 'Close',
+  CLOSE: 'X',
   IMPORT: 'Import',
 };
 

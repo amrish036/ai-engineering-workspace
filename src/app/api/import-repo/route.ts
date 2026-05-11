@@ -1,0 +1,54 @@
+import { NextResponse } from 'next/server';
+import simpleGit from 'simple-git';
+import path from 'path';
+import fs from 'fs';
+
+export async function POST(request: Request) {
+    try {
+        const body = await request.json();
+
+        const repoUrl = body.repoUrl;
+
+        if (!repoUrl) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: 'Repository URL required',
+                },
+                { status: 400 }
+            );
+        }
+
+        const repoName = repoUrl.split('/').pop()?.replace('.git', '');
+
+        const localPath = path.join(process.cwd(), 'repos', repoName || 'repo');
+
+        // Create repos folder
+        if (!fs.existsSync(path.join(process.cwd(), 'repos'))) {
+            fs.mkdirSync(path.join(process.cwd(), 'repos'));
+        }
+
+        const git = simpleGit();
+
+        // Clone repo
+        await git.clone(repoUrl, localPath);
+
+        return NextResponse.json({
+            success: true,
+
+            message: 'Repository cloned successfully',
+
+            localPath,
+        });
+    } catch (error) {
+        console.error(error);
+
+        return NextResponse.json(
+            {
+                success: false,
+                error: 'Failed to import repository',
+            },
+            { status: 500 }
+        );
+    }
+}
