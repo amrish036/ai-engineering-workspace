@@ -1,3 +1,4 @@
+import { CHAT_CONSTANTS } from '@/constants';
 import { APP_NAME } from '@/constants/ui';
 import { ChatSession } from '@/types/chat';
 
@@ -6,6 +7,7 @@ type SidebarProps = {
   activeSessionId: string | null;
   setActiveSessionId: (id: string) => void;
   createNewChat: () => void;
+  openImportModal: () => void;
 };
 
 export default function Sidebar({
@@ -13,6 +15,7 @@ export default function Sidebar({
   activeSessionId,
   setActiveSessionId,
   createNewChat,
+  openImportModal,
 }: SidebarProps) {
   return (
     <div className="w-72 border-r border-white/10 bg-[#161B22] flex flex-col h-screen">
@@ -24,7 +27,13 @@ export default function Sidebar({
           className="mt-4 w-full bg-blue-600 text-white rounded-xl py-2 hover:bg-blue-500 transition"
           onClick={createNewChat}
         >
-          New Chat
+          {CHAT_CONSTANTS.CHAT_BUTTONS.NEW_CHAT}
+        </button>
+        <button
+          className="mt-2 w-full bg-[#21262D] border border-white/10 text-white rounded-xl py-2 hover:bg-[#30363D] transition"
+          onClick={openImportModal}
+        >
+          {CHAT_CONSTANTS.CHAT_BUTTONS.IMPORT_REPOSITORY}
         </button>
       </div>
 
@@ -34,14 +43,17 @@ export default function Sidebar({
           <button
             key={session.id}
             onClick={() => setActiveSessionId(session.id)}
-            className={`w-full text-left border rounded-xl p-3 transition ${activeSessionId === session.id
-              ? 'bg-[#30363D] border-blue-500'
-              : 'bg-[#21262D] border-white/10 hover:bg-[#30363D]'
-              }`}
+            className={`w-full text-left border rounded-xl p-3 transition ${
+              activeSessionId === session.id
+                ? 'bg-[#30363D] border-blue-500'
+                : 'bg-[#21262D] border-white/10 hover:bg-[#30363D]'
+            }`}
           >
             <p className="text-sm font-medium truncate">{session.title}</p>
             <p className="text-xs text-gray-500 mt-1">{session.messages.length} messages</p>
-            <p className="text-xs text-gray-500 mt-1">{new Date(session.createdAt).toLocaleString()}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              {new Date(session.createdAt).toLocaleString()}
+            </p>
           </button>
         ))}
       </div>

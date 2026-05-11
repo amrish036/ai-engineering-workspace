@@ -17,8 +17,12 @@ export const ROLE = {
 export const CHAT_BUTTONS = {
   CLEAR: 'Clear Chat',
   NEW_CHAT: 'New Chat',
+  IMPORT_REPOSITORY: 'Import Repository',
   THINKING: 'Thinking...',
   ASK: 'Ask',
+  CANCEL: 'Cancel',
+  CLOSE: 'Close',
+  IMPORT: 'Import',
 };
 
 export const CHAT_HEADER = {

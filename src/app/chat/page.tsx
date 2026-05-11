@@ -1,8 +1,10 @@
 'use client';
 
-import { ChatHeader, ChatInput, Sidebar, ChatMessages } from '@/components';
+import { ChatHeader, ChatInput, Sidebar, ChatMessages, Modal } from '@/components';
+import { CHAT_CONSTANTS } from '@/constants';
 
 import { useOnlineStatus, useAutoScroll, useChat } from '@/hooks';
+import { useState } from 'react';
 
 export default function ChatPage() {
   const {
@@ -20,6 +22,9 @@ export default function ChatPage() {
   const messagesEndRef = useAutoScroll(activeSession?.messages);
   const isOnline = useOnlineStatus();
 
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [repoUrl, setRepoUrl] = useState('');
+
   return (
     <main className="h-screen bg-[#0D1117] text-white flex">
       <Sidebar
@@ -27,6 +32,7 @@ export default function ChatPage() {
         activeSessionId={activeSessionId}
         setActiveSessionId={setActiveSessionId}
         createNewChat={createNewChat}
+        openImportModal={() => setShowImportModal(true)}
       />
       <div className="flex-1 flex flex-col">
         <ChatHeader isOnline={isOnline} />
@@ -57,6 +63,35 @@ export default function ChatPage() {
           loading={loading}
         />
       </div>
+      <Modal
+        open={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        title={CHAT_CONSTANTS.CHAT_BUTTONS.IMPORT_REPOSITORY}
+      >
+        <div>
+          <label className="block text-sm text-gray-400 mb-2">GitHub Repository URL</label>
+
+          <input
+            value={repoUrl}
+            onChange={(e) => setRepoUrl(e.target.value)}
+            placeholder="https://github.com/vercel/next.js"
+            className="w-full bg-[#21262D] border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            onClick={() => setShowImportModal(false)}
+            className="px-4 py-2 rounded-xl border border-white/10 text-gray-300 hover:bg-[#21262D] transition"
+          >
+            {CHAT_CONSTANTS.CHAT_BUTTONS.CANCEL}
+          </button>
+
+          <button className="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition">
+            {CHAT_CONSTANTS.CHAT_BUTTONS.IMPORT}
+          </button>
+        </div>
+      </Modal>
     </main>
   );
 }
