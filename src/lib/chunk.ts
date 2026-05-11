@@ -17,3 +17,5 @@ export function chunkCode(file: string, content: string, chunkSize = 1000): Chun
 
   return chunks;
 }
+
+export default chunkCode;

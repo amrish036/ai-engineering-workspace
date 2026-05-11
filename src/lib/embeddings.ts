@@ -10,7 +10,7 @@ async function getExtractor() {
   return extractor;
 }
 
-export async function generateEmbedding(text: string): Promise<number[]> {
+async function generateEmbedding(text: string): Promise<number[]> {
   const extractor = await getExtractor();
 
   const output = await extractor(text, {
@@ -20,3 +20,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
 
   return Array.from(output.data) as number[];
 }
+
+export default generateEmbedding;
+
+
