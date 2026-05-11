@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import simpleGit from 'simple-git';
 import path from 'path';
 import fs from 'fs';
-import { getRepoFiles, chunkFile } from '@/lib';
+import { getRepoFiles, chunkFile, generateEmbedding, sql } from '@/lib';
 
 export async function POST(request: Request) {
     try {
@@ -57,14 +57,43 @@ export async function POST(request: Request) {
                 });
             }
         }
-
         console.log('Total chunks:', chunks.length);
+
+        const embeddedChunks = [];
+        const limitedChunks = chunks.slice(0, 20);
+
+        for (const chunk of limitedChunks) {
+            const embedding =
+                await generateEmbedding(
+                    chunk.content
+                );
+            embeddedChunks.push({
+                ...chunk,
+                embedding,
+            });
+            console.log(`Embedding chunk ${embeddedChunks.length + 1}/${chunks.length}`);
+        }
+
+        for (const chunk of embeddedChunks) {
+            await sql`INSERT INTO repo_chunks (
+                        file_path,
+                        content,
+                        embedding
+                        )
+                    VALUES (
+                        ${chunk.file},
+                        ${chunk.content},
+                        ${JSON.stringify(chunk.embedding)}
+            )`;
+            console.log('Stored:', chunk.file);
+        }
 
         return NextResponse.json({
             success: true,
             message: 'Repository imported successfully',
             fileCount: files.length,
             chunkCount: chunks.length,
+            embeddedChunkCount: embeddedChunks.length,
         });
     } catch (error) {
         console.error(error);
