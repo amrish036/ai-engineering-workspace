@@ -1,12 +1,27 @@
+import { useState } from 'react';
 import { UI_CONSTANTS, CHAT_CONSTANTS } from '../constants';
+import { AI_MODELS } from '@/constants/models';
 
 type ChatHeaderProps = {
   isOnline: boolean;
+  selectedModel: string;
+  setSelectedModel: (modelId: string) => void;
 };
 
-export default function ChatHeader({ isOnline }: ChatHeaderProps) {
+export default function ChatHeader({ isOnline, selectedModel, setSelectedModel }: ChatHeaderProps) {
   return (
     <div className="h-[73px] border-b border-white/10 bg-[#161B22] flex items-center justify-between px-6">
+      <select
+        value={selectedModel}
+        onChange={(e) => setSelectedModel(e.target.value)}
+        className="bg-[#161B22] border border-white/10 rounded-lg px-3 py-2 text-sm"
+      >
+        {AI_MODELS.map((model) => (
+          <option key={model.id} value={model.id}>
+            {model.name} ({model.provider})
+          </option>
+        ))}
+      </select>
       <div>
         <h1 className="text-lg font-semibold text-white">{CHAT_CONSTANTS.CHAT_HEADER.HEADER}</h1>
 

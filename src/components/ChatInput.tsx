@@ -5,12 +5,20 @@ type ChatInputProps = {
 
   setQuestion: (question: string) => void;
 
-  askQuestion: () => void;
+  askQuestion: (question: string, model: string) => void;
 
   loading: boolean;
+
+  selectedModel: string;
 };
 
-export default function ChatInput({ question, setQuestion, askQuestion, loading }: ChatInputProps) {
+export default function ChatInput({
+  question,
+  setQuestion,
+  askQuestion,
+  loading,
+  selectedModel,
+}: ChatInputProps) {
   return (
     <div className="border-t border-white/10 h-[73px] bg-[#161B22] flex items-center px-4">
       <div className="w-full max-w-4xl mx-auto flex gap-3">
@@ -22,13 +30,13 @@ export default function ChatInput({ question, setQuestion, askQuestion, loading 
           onChange={(e) => setQuestion(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              askQuestion();
+              askQuestion(question, selectedModel);
             }
           }}
         />
 
         <button
-          onClick={askQuestion}
+          onClick={() => askQuestion(question, selectedModel)}
           disabled={loading}
           className="bg-blue-600 text-white px-6 rounded-xl hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
         >

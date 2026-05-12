@@ -9,6 +9,7 @@ export function useChat() {
   const [loading, setLoading] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState('llama-3.3-70b-versatile');
 
   // Load sessions
   useEffect(() => {
@@ -53,7 +54,7 @@ export function useChat() {
     setActiveSessionId(newSession.id);
   }
 
-  async function askQuestion() {
+  async function askQuestion(question: string, model: string) {
     if (!question.trim() || !activeSessionId) {
       return;
     }
@@ -92,7 +93,9 @@ export function useChat() {
     );
 
     try {
-      const response = await fetch(`/api/repo-chat?question=${encodeURIComponent(userQuestion)}`);
+      const response = await fetch(
+        `/api/repo-chat?question=${encodeURIComponent(userQuestion)}&model=${encodeURIComponent(model)}`
+      );
 
       const reader = response.body?.getReader();
 
@@ -148,6 +151,8 @@ export function useChat() {
     setActiveSessionId,
     createNewChat,
     askQuestion,
+    selectedModel,
+    setSelectedModel,
   };
 }
 

@@ -25,10 +25,11 @@ export default function ChatPage() {
   const [showImportModal, setShowImportModal] = useState(false);
   const [repoUrl, setRepoUrl] = useState('');
 
+  const { selectedModel, setSelectedModel } = useChat();
+
   const { importingRepo, handleImportRepository } = useRepositoryImport({
     onSuccess() {
       setShowImportModal(false);
-
       setRepoUrl('');
     },
   });
@@ -43,7 +44,11 @@ export default function ChatPage() {
         openImportModal={() => setShowImportModal(true)}
       />
       <div className="flex-1 flex flex-col">
-        <ChatHeader isOnline={isOnline} />
+        <ChatHeader
+          isOnline={isOnline}
+          selectedModel={selectedModel}
+          setSelectedModel={setSelectedModel}
+        />
 
         <div className="flex-1 overflow-y-auto px-6 py-6">
           <div className="max-w-4xl mx-auto space-y-6">
@@ -69,6 +74,7 @@ export default function ChatPage() {
           setQuestion={setQuestion}
           askQuestion={askQuestion}
           loading={loading}
+          selectedModel={selectedModel}
         />
       </div>
       <Modal
