@@ -21,23 +21,32 @@ This project focuses on building production-style AI infrastructure and develope
 ## Current
 
 - **Next.js App Router architecture** with TypeScript
-- **AI API integration** (Groq/OpenAI-compatible with Llama models)
-- **Repository ingestion pipeline** with automated code chunking
-- **Embedding generation** using transformer models (Xenova/all-MiniLM-L6-v2)
-- **Vector database integration** (PostgreSQL with pgvector)
-- **Semantic repository search** with multiple retrieval strategies
+- **AI API integration** using Groq + Llama 3.3 70B
 - **Repository-aware AI chat** with streaming responses
-- **Interactive chat interface** with message persistence
-- **Docker infrastructure** for local development
-- **Modular backend utilities** for embeddings, similarity, and file processing
+- **Multi-session AI workspace** with persistent conversations
+- **GitHub repository import pipeline** for public repositories
+- **Repository ingestion pipeline** with automated file scanning and chunking
+- **Embedding generation** using Xenova/all-MiniLM-L6-v2
+- **Vector database integration** using PostgreSQL + pgvector
+- **Semantic repository retrieval** using cosine similarity search
+- **RAG-powered contextual AI responses** grounded in repository code
+- **Interactive chat UI** with sidebar sessions and dark mode workspace layout
+- **Streaming AI responses** with incremental rendering
+- **Reusable frontend architecture** using hooks, services, and modular components
+- **Docker infrastructure** for local AI development
+- **Semantic search infrastructure** for code understanding workflows
 
 ## Planned
 
+- Retrieved context panel
+- Architecture visualization
 - PR review assistant
-- Architecture summarization
+- Repository summarization
 - Multi-agent engineering workflows
-- GitHub integration
+- GitHub OAuth & private repository support
 - Evaluation & observability systems
+- Code generation workflows
+- Agentic developer tooling
 
 ---
 
@@ -62,7 +71,7 @@ This project focuses on building production-style AI infrastructure and develope
 
 - Groq API (Llama 3.3 70B)
 - OpenAI-compatible SDKs
-- Xenova Transformers (client-side embeddings)
+- Xenova/all-MiniLM-L6-v2 embeddings (384 dimensions)
 - RAG architecture with semantic retrieval
 - Cosine similarity for vector matching
 
@@ -83,6 +92,11 @@ This project explores modern AI engineering concepts including:
 - Semantic search and vector similarity
 - Context engineering for AI interactions
 - AI workflow orchestration
+- Repository-aware conversational interfaces
+- GitHub ingestion and indexing systems
+- Vector retrieval pipelines for code intelligence
+- Streaming AI UX patterns
+- AI-native developer workspace design
 - Developer productivity tooling
 - Real-time streaming AI responses
 
@@ -92,7 +106,7 @@ This project explores modern AI engineering concepts including:
 
 🚧 Active Development
 
-Current phase: Full RAG implementation with vector search, AI chat, and interactive UI.
+Current phase: End-to-end repository RAG system with GitHub ingestion, pgvector retrieval, semantic repository chat, and AI workspace UX.
 
 ---
 
@@ -116,7 +130,7 @@ Current phase: Full RAG implementation with vector search, AI chat, and interact
 2. **Install dependencies**
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Start PostgreSQL database**
@@ -125,42 +139,33 @@ Current phase: Full RAG implementation with vector search, AI chat, and interact
    docker-compose up -d
    ```
 
-4. **Setup database schema**
+4. **Start the development server**
 
    ```bash
-   curl http://localhost:3000/api/setup-db
+   pnpm run dev
    ```
 
-5. **Ingest codebase** (optional - indexes the current project)
+5. **Import a GitHub repository**
 
-   ```bash
-   curl http://localhost:3000/api/ingest
+   Open:
+
+   ```
+   http://localhost:3000/chat
    ```
 
-6. **Run development server**
-   ```bash
-   npm run dev
-   ```
-
-Visit `http://localhost:3000/chat` to interact with the AI assistant.
+   Then use the `Import Repository` modal to ingest and index a public GitHub repository.
 
 ---
 
 # API Endpoints
 
-- `GET /api/chat` - Basic RAG chat (no persistence)
-- `GET /api/repo-chat` - Repository-aware chat with vector search
-- `GET /api/search` - Semantic code search
-- `GET /api/vector-search` - Vector database search
-- `GET /api/embeddings` - Test embedding generation
-- `GET /api/files` - List and chunk project files
-- `GET /api/ingest` - Ingest codebase into vector database
-- `GET /api/setup-db` - Initialize database schema
-- `GET /api/db` - Test database connection
-- `GET /api/test` - Test AI API connection
+- `POST /api/import-repo` - Clone, chunk, embed, and index GitHub repositories
+- `GET /api/repo-chat` - Repository-aware AI chat with semantic retrieval
 
 ---
 
 # Vision
 
-The long-term goal is to build an AI-native engineering workspace capable of understanding repositories, assisting developers, and orchestrating intelligent software workflows with production-ready RAG infrastructure.
+The long-term vision is to build an AI-native engineering workspace capable of understanding repositories, retrieving relevant architectural context, assisting developers through intelligent workflows, and evolving toward autonomous AI engineering systems.
+
+This project explores the future of developer tooling through retrieval-augmented generation (RAG), semantic code understanding, repository intelligence, and AI-first engineering experiences.
