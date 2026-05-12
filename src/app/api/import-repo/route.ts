@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 import simpleGit from 'simple-git';
 import path from 'path';
 import fs from 'fs';
-import { getRepoFiles, chunkFile, generateEmbedding, sql } from '@/lib';
+import { getRepoFiles, chunkFile, generateEmbedding, sql, setupDatabase } from '@/lib';
 
 export async function POST(request: Request) {
   try {
+    
+    await setupDatabase();
+
     const dbCheck = await sql`SELECT current_database()`;
 
     console.log(dbCheck);
