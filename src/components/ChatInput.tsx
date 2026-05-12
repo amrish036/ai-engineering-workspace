@@ -37,7 +37,7 @@ export default function ChatInput({
 
         <button
           onClick={() => askQuestion(question, selectedModel)}
-          disabled={loading}
+          disabled={loading || question.trim() === ''}
           className="bg-blue-600 text-white px-6 rounded-xl hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {loading ? CHAT_CONSTANTS.CHAT_BUTTONS.THINKING : CHAT_CONSTANTS.CHAT_BUTTONS.ASK}

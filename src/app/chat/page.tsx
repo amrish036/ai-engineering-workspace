@@ -24,6 +24,7 @@ export default function ChatPage() {
 
   const [showImportModal, setShowImportModal] = useState(false);
   const [repoUrl, setRepoUrl] = useState('');
+  const [repoError, setRepoError] = useState('');
 
   const { selectedModel, setSelectedModel } = useChat();
 
@@ -31,6 +32,7 @@ export default function ChatPage() {
     onSuccess() {
       setShowImportModal(false);
       setRepoUrl('');
+      setRepoError('');
     },
   });
 
@@ -92,6 +94,7 @@ export default function ChatPage() {
             placeholder="https://github.com/vercel/next.js"
             className="w-full bg-[#21262D] border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {repoError ? <p className="text-sm text-red-400 mt-2">{repoError}</p> : null}
         </div>
 
         <div className="flex justify-end gap-3 mt-6">
@@ -103,7 +106,25 @@ export default function ChatPage() {
           </button>
 
           <button
-            onClick={() => handleImportRepository(repoUrl)}
+            onClick={() => {
+              const trimmedUrl = repoUrl.trim();
+
+              if (!trimmedUrl) {
+                setRepoError('Repository URL is required');
+                return;
+              }
+
+              const isGithubRepo = /^https:\/\/github\.com\/.+\/.+/i.test(trimmedUrl);
+
+              if (!isGithubRepo) {
+                setRepoError('Please enter a valid GitHub repository URL');
+                return;
+              }
+
+              setRepoError('');
+
+              handleImportRepository(trimmedUrl);
+            }}
             disabled={importingRepo}
             className="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition disabled:opacity-50"
           >
