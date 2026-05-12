@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { generateEmbedding, sql } from '@/lib';
+import { generateEmbedding, searchSimilarChunks } from '@/lib';
 
 const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
@@ -7,69 +7,101 @@ const client = new OpenAI({
 });
 
 export async function GET(request: Request) {
-  const question = new URL(request.url).searchParams.get('question') || '';
+  try {
+    const question = new URL(request.url).searchParams.get('question') || '';
+    if (!question.trim()) {
+      return new Response('Question required', { status: 400 });
+    }
+    // 1. Generate embedding
+    const queryEmbedding = await generateEmbedding(question);
 
-  // 1. Generate embedding
-  const embedding = await generateEmbedding(question);
+    const similarChunks = await searchSimilarChunks({
+      embedding: queryEmbedding,
+      limit: 5,
+    });
 
-  // 2. Retrieve relevant chunks
-  const results = await sql`
-    SELECT
-      file,
-      content,
+    const limitedChunks = similarChunks.slice(0, 5);
 
-      embedding <=> ${JSON.stringify(embedding)}::vector AS distance
+    console.log(limitedChunks.map((chunk) => chunk.file_path));
 
-    FROM code_embeddings
+    console.log(
+      limitedChunks.map((chunk) => ({
+        file: chunk.file_path,
+        preview: chunk.content.slice(0, 200),
+      }))
+    );
 
-    ORDER BY distance ASC
+    // 3. Build context
+    const context = limitedChunks
+      .map(
+        (chunk) => `
+FILE: ${chunk.file_path}
 
-    LIMIT 5
-  `;
+CODE:
+${chunk.content}
+`
+      )
+      .join('\n\n====================\n\n');
 
-  // 3. Build context
-  const context = results.map((result) => `FILE: ${result.file}\n${result.content}`).join('\n\n');
 
-  // 4. Stream response
-  const completion = await client.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
 
-    stream: true,
+    // 4. Stream response
+    const completion = await client.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      stream: true,
+      messages: [
+        {
+          role: 'system',
+          content: `You are an AI repository assistant.
 
-    messages: [
-      {
-        role: 'system',
-        content: 'You are an expert AI engineering assistant.',
-      },
+Use ONLY the provided repository context.
 
-      {
-        role: 'user',
-        content: `
-Question:
+When answering:
+- Mention relevant file names.
+- Explain implementation details from the code.
+- Do not make up functionality.
+- If the answer is not in the context, say you could not find relevant information in the repository.
+- Keep answers concise and technical.`,
+        },
+        {
+          role: 'user',
+          content: `
+USER QUESTION:
 ${question}
 
-Repository Context:
+REPOSITORY CONTEXT:
 ${context}
 
-Answer using the repository context.
+Answer the question using ONLY the repository context above.
+Reference relevant files when possible.
 `,
+        },
+      ],
+    });
+
+    const encoder = new TextEncoder();
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of completion) {
+          const text = chunk.choices[0]?.delta?.content || '';
+
+          controller.enqueue(encoder.encode(text));
+        }
+
+        controller.close();
       },
-    ],
-  });
+    });
 
-  const encoder = new TextEncoder();
+    return new Response(stream);
+  } catch (error) {
+    console.error('Repo chat error:', error);
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      for await (const chunk of completion) {
-        const text = chunk.choices[0]?.delta?.content || '';
-
-        controller.enqueue(encoder.encode(text));
+    return new Response(
+      'Something went wrong while processing the repository chat.',
+      {
+        status: 500,
       }
-
-      controller.close();
-    },
-  });
-
-  return new Response(stream);
+    );
+  }
 }

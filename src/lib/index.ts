@@ -5,3 +5,4 @@ export { default as generateEmbedding } from './embeddings';
 export { default as chunkCode } from './chunk';
 export { default as cosineSimilarity } from './similarity';
 export { default as getProjectFiles } from './files';
+export { default as searchSimilarChunks } from './searchSimilarChunks';
