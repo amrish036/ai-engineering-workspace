@@ -8,9 +8,10 @@ type ChatMessagesProps = {
     | typeof CHAT_CONSTANTS.ROLE.AI;
   content: string;
   isStreaming?: boolean;
+  sources?: { file: string }[];
 };
 
-export default function ChatMessages({ role, content, isStreaming }: ChatMessagesProps) {
+export default function ChatMessages({ role, content, isStreaming, sources }: ChatMessagesProps) {
   return (
     <div className={`flex ${role === CHAT_CONSTANTS.ROLE.USER ? 'justify-end' : 'justify-start'}`}>
       <div
@@ -22,7 +23,22 @@ export default function ChatMessages({ role, content, isStreaming }: ChatMessage
       >
         <div>
           <MarkDownRenderer content={content} />
+          {role === 'assistant' && sources?.length ? (
+            <div className="mt-4 border-t border-white/10 pt-3">
+              <p className="text-xs text-gray-400 mb-2">Retrieved Files</p>
 
+              <div className="flex flex-wrap gap-2">
+                {sources.map((source, index) => (
+                  <div
+                    key={index}
+                    className="text-xs bg-[#161B22] border border-white/10 px-2 py-1 rounded-lg text-gray-300"
+                  >
+                    {source.file}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
           {isStreaming && <span className="cursor">▋</span>}
         </div>
       </div>

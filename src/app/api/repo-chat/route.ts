@@ -9,6 +9,7 @@ const client = new OpenAI({
 export async function GET(request: Request) {
   try {
     const question = new URL(request.url).searchParams.get('question') || '';
+    const model = new URL(request.url).searchParams.get('model') || 'llama-3.3-70b-versatile';
     if (!question.trim()) {
       return new Response('Question required', { status: 400 });
     }
@@ -43,11 +44,9 @@ ${chunk.content}
       )
       .join('\n\n====================\n\n');
 
-
-
     // 4. Stream response
     const completion = await client.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: model,
       stream: true,
       messages: [
         {
@@ -93,15 +92,20 @@ Reference relevant files when possible.
       },
     });
 
-    return new Response(stream);
+    return new Response(stream, {
+      headers: {
+        'x-sources': JSON.stringify(
+          Array.from(new Set(limitedChunks.map((chunk) => chunk.file_path))).map((file) => ({
+            file,
+          }))
+        ),
+      },
+    });
   } catch (error) {
     console.error('Repo chat error:', error);
 
-    return new Response(
-      'Something went wrong while processing the repository chat.',
-      {
-        status: 500,
-      }
-    );
+    return new Response('Something went wrong while processing the repository chat.', {
+      status: 500,
+    });
   }
 }

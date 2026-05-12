@@ -69,12 +69,14 @@ export function useChat() {
       id: crypto.randomUUID(),
       role: CHAT_CONSTANTS.ROLE.USER,
       content: userQuestion,
+      createdAt: new Date().toISOString(),
     };
 
     const assistantMessage: Message = {
       id: crypto.randomUUID(),
       role: CHAT_CONSTANTS.ROLE.ASSISTANT,
       content: '',
+      createdAt: new Date().toISOString(),
     };
 
     // Add initial messages
@@ -96,6 +98,10 @@ export function useChat() {
       const response = await fetch(
         `/api/repo-chat?question=${encodeURIComponent(userQuestion)}&model=${encodeURIComponent(model)}`
       );
+
+      const sourcesHeader = response.headers.get('x-sources');
+
+      const sources = sourcesHeader ? JSON.parse(sourcesHeader) : [];
 
       const reader = response.body?.getReader();
 
@@ -124,6 +130,7 @@ export function useChat() {
               updatedMessages[lastIndex] = {
                 ...updatedMessages[lastIndex],
                 content: updatedMessages[lastIndex].content + chunk,
+                sources,
               };
 
               return {

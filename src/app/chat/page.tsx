@@ -62,6 +62,7 @@ export default function ChatPage() {
                   index === activeSession.messages.length - 1 &&
                   message.role === 'assistant'
                 }
+                sources={message.sources}
               />
             ))}
 

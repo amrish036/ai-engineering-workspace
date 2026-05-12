@@ -8,6 +8,7 @@ const client = new OpenAI({
 
 export async function GET() {
   const question = 'Explain how the AI routes work in this project';
+  
 
   // 1. Read project files
   const files = await getProjectFiles();
