@@ -28,7 +28,26 @@ This project focuses on building production-style AI infrastructure and develope
 
 > Import a GitHub repository, generate embeddings, perform semantic retrieval, and chat with the codebase using AI.
 
-(Add screenshots or demo GIFs here)
+### Screenshots
+
+- Repository import modal
+  ![alt text](image.png)
+- AI repository chat
+  ![alt text](image-1.png)
+- Retrieved context UI
+  ![alt text](image-2.png)
+- Model switching
+  ![alt text](image-3.png)
+- Multi-session workspace sidebar
+  ![alt text](image-4.png)
+
+### Loom Demo
+
+Add a short walkthrough demo covering:
+
+<div style="position: relative; padding-bottom: 62.5%; height: 0;"><iframe src="https://www.loom.com/embed/0313dce968e04906a7cf1d63f24cbfc6" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+(Add screenshots, GIFs, or Loom links here)
 
 ---
 
