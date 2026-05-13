@@ -43,11 +43,8 @@ This project focuses on building production-style AI infrastructure and develope
 
 ### Loom Demo
 
-Add a short walkthrough demo covering:
-
 <div style="position: relative; padding-bottom: 62.5%; height: 0;"><iframe src="https://www.loom.com/embed/0313dce968e04906a7cf1d63f24cbfc6" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
 
-(Add screenshots, GIFs, or Loom links here)
 
 ---
 
